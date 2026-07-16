@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Shell 練習器 | 數位 IC 設計工程師</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">$_</span>
+      <div class="brand-text">
+        <span class="brand-title">Linux Shell 練習器</span>
+        <span class="brand-sub">for Digital IC Engineers</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-btn active" id="nav-home"      onclick="showSection('home')">首頁</button>
+      <button class="nav-btn"        id="nav-reference" onclick="showSection('reference')">指令參考</button>
+      <button class="nav-btn"        id="nav-tutorial"  onclick="showSection('tutorial')">教學模式</button>
+      <button class="nav-btn"        id="nav-terminal"  onclick="showSection('terminal')">互動終端</button>
+    </div>
+    <div class="nav-progress">
+      <span id="progress-text">進度 0/0</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </nav>
+
+  <!-- ===== HOME ===== -->
+  <section id="section-home" class="section active">
+    <div class="home-hero">
+      <div class="hero-content">
+        <h1>Linux Shell 練習器</h1>
+        <p class="hero-desc">專為數位 IC 設計工程師設計的互動式 Linux/Bash 學習平台<br>從基礎指令到 EDA 工具腳本，模擬真實工作環境</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showSection('terminal')">開啟終端機</button>
+          <button class="btn-outline" onclick="showSection('tutorial')">開始教學</button>
+        </div>
+      </div>
+      <div class="hero-terminal">
+        <div class="mini-term-bar"><span></span><span></span><span></span></div>
+        <div class="mini-term-body" id="hero-term"></div>
+      </div>
+    </div>
+
+    <div class="home-categories">
+      <h2>學習分類</h2>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <div class="home-features">
+      <div class="feature-card">
+        <div class="feat-icon">📖</div>
+        <h3>指令參考手冊</h3>
+        <p>涵蓋 60+ 個常用指令，含 IC 設計實際應用範例</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🎓</div>
+        <h3>結構化教學</h3>
+        <p>11 大主題，從基礎到進階，每節含可互動範例</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">💻</div>
+        <h3>虛擬終端機</h3>
+        <p>模擬真實 Linux 環境，預載 IC 設計專案檔案</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🎯</div>
+        <h3>任務式練習</h3>
+        <p>40+ 個情境任務，解析 log、處理 report、撰寫腳本</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REFERENCE ===== -->
+  <section id="section-reference" class="section">
+    <div class="ref-header">
+      <h2>指令參考手冊</h2>
+      <div class="ref-search-wrap">
+        <input type="text" id="ref-search" placeholder="搜尋指令..." oninput="filterRef(this.value)">
+        <div class="ref-cats" id="ref-cats"></div>
+      </div>
+    </div>
+    <div class="ref-grid" id="ref-grid"></div>
+    <div class="ref-detail" id="ref-detail" style="display:none">
+      <button class="back-btn" onclick="closeRefDetail()">← 返回</button>
+      <div id="ref-detail-content"></div>
+    </div>
+  </section>
+
+  <!-- ===== TUTORIAL ===== -->
+  <section id="section-tutorial" class="section">
+    <div class="tut-layout" id="tut-home">
+      <h2>教學模式</h2>
+      <div class="tut-cat-grid" id="tut-cat-grid"></div>
+    </div>
+    <div class="tut-play-layout" id="tut-play" style="display:none">
+      <aside class="tut-sidebar" id="tut-sidebar"></aside>
+      <div class="tut-content">
+        <div class="tut-breadcrumb" id="tut-breadcrumb"></div>
+        <div id="tut-article"></div>
+        <div class="tut-nav-btns">
+          <button class="btn-outline" id="tut-prev" onclick="tutNav(-1)">← 上一節</button>
+          <button class="btn-primary" id="tut-next" onclick="tutNav(1)">下一節 →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TERMINAL ===== -->
+  <section id="section-terminal" class="section">
+    <div class="term-layout">
+      <div class="term-main">
+        <div class="term-topbar">
+          <div class="term-dots"><span></span><span></span><span></span></div>
+          <span class="term-title">user@linux-practice:~</span>
+          <div class="term-actions">
+            <button class="term-action-btn" onclick="termReset()" title="重置環境">重置</button>
+            <button class="term-action-btn" onclick="termClear()" title="清除畫面">清除</button>
+            <button class="term-action-btn" id="mission-toggle-btn" onclick="toggleMissionPanel()">任務 ▶</button>
+          </div>
+        </div>
+        <div class="term-output" id="term-output"></div>
+        <div class="term-input-row">
+          <span class="term-prompt" id="term-prompt">user@linux-practice:~$</span>
+          <input type="text" class="term-input" id="term-input"
+                 placeholder="輸入指令..."
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 onkeydown="termKeyDown(event)">
+        </div>
+      </div>
+      <div class="mission-panel" id="mission-panel">
+        <div class="mission-panel-header">
+          <h3>任務練習</h3>
+          <button class="close-btn" onclick="toggleMissionPanel()">×</button>
+        </div>
+        <div class="mission-list" id="mission-list"></div>
+        <div class="mission-detail" id="mission-detail" style="display:none">
+          <button class="back-btn" onclick="closeMissionDetail()">← 全部任務</button>
+          <div id="mission-detail-content"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="commands-ref.js"></script>
+  <script src="tutorials.js"></script>
+  <script src="exercises.js"></script>
+  <script src="terminal.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
