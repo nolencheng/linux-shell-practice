@@ -271,8 +271,8 @@ VERSION="v1.2.3"
 
 <span class="cb-comment"># 使用變數</span>
 echo $DESIGN
-echo ${DESIGN}_netlist.v   <span class="cb-comment"># {} 避免歧義</span>
-echo "Design: ${DESIGN}"
+echo \${DESIGN}_netlist.v   <span class="cb-comment"># {} 避免歧義</span>
+echo "Design: \${DESIGN}"
 
 <span class="cb-comment"># 命令替換</span>
 TODAY=$(date +%Y%m%d)
@@ -296,7 +296,7 @@ echo 'Design: $DESIGN'   <span class="cb-comment"># 輸出：Design: $DESIGN</sp
 <tr><td>$?</td><td>上一個指令的退出碼（0=成功）</td></tr>
 <tr><td>$$</td><td>目前 shell 的 PID</td></tr>
 </tbody></table>
-<button class="try-btn" onclick="tryCmdInTerminal('DESIGN=top && echo \"Design: ${DESIGN}\"')">定義變數</button>
+<button class="try-btn" onclick="tryCmdInTerminal('DESIGN=top && echo \"Design: \${DESIGN}\"')">定義變數</button>
 <button class="try-btn" onclick="tryCmdInTerminal('TODAY=$(date) && echo "Today: $TODAY"')">命令替換</button>
 <button class="try-btn" onclick="tryCmdInTerminal('echo $((8 * 8)) bytes')">算術運算</button>`
       },
@@ -356,7 +356,7 @@ fi</div>
 <div class="code-block"><span class="cb-comment"># 遍歷清單</span>
 for MODULE in adder multiplier fsm_ctrl; do
     echo "Checking: $MODULE"
-    grep "module $MODULE" design/rtl/${MODULE}.v
+    grep "module $MODULE" design/rtl/\${MODULE}.v
 done
 
 <span class="cb-comment"># 遍歷所有 .v 檔</span>
@@ -389,9 +389,9 @@ PASS=0; FAIL=0
 
 for TESTCASE in tc_basic tc_overflow tc_reset tc_boundary; do
     echo -n "Running $TESTCASE... "
-    vcs -f ${TESTCASE}.f -o simv && ./simv > ${TESTCASE}.log 2>&1
+    vcs -f \${TESTCASE}.f -o simv && ./simv > \${TESTCASE}.log 2>&1
 
-    if grep -q "PASS" ${TESTCASE}.log; then
+    if grep -q "PASS" \${TESTCASE}.log; then
         echo "PASS"; PASS=$((PASS+1))
     else
         echo "FAIL"; FAIL=$((FAIL+1))
@@ -747,7 +747,7 @@ echo "=============================="
 
 for TC in design/tb/tb_*.sv; do
     NAME=$(basename $TC .sv)
-    LOG="logs/${NAME}.log"
+    LOG="logs/\${NAME}.log"
 
     echo -n "Testing $NAME... "
 
@@ -811,7 +811,7 @@ printf "Power: %s mW\\n"   $(grep "Total Power" design/reports/power.rpt | awk '
 
 WNS=$(grep "slack (VIOLATED)" design/reports/timing.rpt | awk '{print $NF}' | sort -n | head -1)
 VIOLS=$(grep -c "VIOLATED" design/reports/timing.rpt 2>/dev/null || echo 0)
-printf "WNS:   %s ns\\n" ${WNS:-0}
+printf "WNS:   %s ns\\n" \${WNS:-0}
 printf "Violations: %s\\n" $VIOLS</div>
 <button class="try-btn" onclick="tryCmdInTerminal('grep \"VIOLATED\" design/reports/timing.rpt')">找 timing violation</button>
 <button class="try-btn" onclick="tryCmdInTerminal('grep \"Total area\" design/reports/area.rpt | awk \'{print $NF}\'')">提取面積</button>
